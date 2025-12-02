@@ -84,7 +84,7 @@ class Bird:
             self.rct.move_ip(-sum_mv[0], -sum_mv[1])
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
             self.img = __class__.imgs[tuple(sum_mv)]
-            self.dire = tuple(sum_mv)
+            self.dire = tuple(sum_mv) # こうかとんの向きを更新
         screen.blit(self.img, self.rct)
 
 
@@ -102,10 +102,10 @@ class Beam:
         self.vx, self.vy = vx, vy # ビームの速度ベクトル
         theta = math.atan2(-vy, vx)  # 速度ベクトルの角度（ラジアン）
         deg = math.degrees(theta)  # 角度（度）
-        self.img = pg.transform.rotozoom(base, deg, 1.0)
-        cx = bird.rct.centerx + bird.rct.width  * (self.vx / 5)
-        cy = bird.rct.centery + bird.rct.height * (self.vy / 5)
-        self.rct = self.img.get_rect(center=(cx, cy))
+        self.img = pg.transform.rotozoom(base, deg, 1.0) # ビーム画像の回転
+        cx = bird.rct.centerx + bird.rct.width  * (self.vx / 5) # ビームの初期位置x座標
+        cy = bird.rct.centery + bird.rct.height * (self.vy / 5) # ビームの初期位置y座標
+        self.rct = self.img.get_rect(center=(cx, cy)) # ビーム画像のRect
 
 
 
@@ -155,6 +155,7 @@ class Bomb:
 class Score:
     """
     スコアに関するクラス
+    返り値：なし
     """
     def __init__(self):
         """
@@ -175,6 +176,8 @@ class Score:
 class Explosion:
     """
     爆発エフェクトに関するクラス
+    引数 bomb：爆発位置の基準となるBombインスタンス
+    返り値：なし
     """
 
     def __init__(self, bomb):
@@ -199,9 +202,9 @@ def main():
     bird = Bird((300, 200))
     # bomb = Bomb((255, 0, 0), 10)
     bombs = [Bomb((255, 0, 0), 10) for _ in range(NUM_OF_BOMBS)]
-    beams = []  # ゲーム初期化時にはビームは存在しない
+    beams = []   # ビームのリスト
     explosions = []  # 爆発エフェクトのリスト
-    score = Score()
+    score = Score() # スコアクラスのインスタンス生成
     clock = pg.time.Clock()
     tmr = 0
     while True:
@@ -240,19 +243,20 @@ def main():
                         score.score += 1
                         pg.display.update()
                         
-        bombs = [bomb for bomb in bombs if bomb is not None]
-        beams = [beam for beam in beams if beam is not None]
-        explosions = [explosion for explosion in explosions if explosion.life > 0]
+        bombs = [bomb for bomb in bombs if bomb is not None] # 爆弾リストからNoneを削除
+        beams = [beam for beam in beams if beam is not None] # ビームリストからNoneを削除
+        explosions = [explosion for explosion in explosions if explosion.life > 0] # 爆発エフェクトの寿命が残っているものだけを保持
 
+        # 追加機能：全ての爆弾を破壊したら勝利メッセージを表示して3秒間待機の後終了
         if len(bombs) == 0:
             fonto_big = pg.font.Font(None, 80)
             font_mid = pg.font.Font(None, 60)
-            win_txt = fonto_big.render("You Win!", True, (255, 0, 0))
-            sc_txt  = font_mid.render(f"SCORE: {score.score}", True, (0, 0, 0))
+            win_txt = fonto_big.render("You Win!", True, (255, 0, 0)) # 勝利メッセージ
+            sc_txt  = font_mid.render(f"SCORE: {score.score}", True, (0, 0, 0)) # スコア表示
             screen.blit(win_txt, [WIDTH//2-140, HEIGHT//2-50])
             screen.blit(sc_txt, [WIDTH//2-130, HEIGHT//2+30])
             pg.display.update()
-            time.sleep(3)
+            time.sleep(3) # 3秒間待機
             return
 
         for explosion in explosions:
