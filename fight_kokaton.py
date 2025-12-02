@@ -249,8 +249,8 @@ def main():
             font_mid = pg.font.Font(None, 60)
             win_txt = fonto_big.render("You Win!", True, (255, 0, 0))
             sc_txt  = font_mid.render(f"SCORE: {score.score}", True, (0, 0, 0))
-            screen.blit(win_txt, [WIDTH//2-150, HEIGHT//2])
-            screen.blit(sc_txt, [WIDTH//2-150, HEIGHT//2+80])
+            screen.blit(win_txt, [WIDTH//2-140, HEIGHT//2-50])
+            screen.blit(sc_txt, [WIDTH//2-130, HEIGHT//2+30])
             pg.display.update()
             time.sleep(3)
             return
