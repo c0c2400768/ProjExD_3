@@ -244,6 +244,17 @@ def main():
         beams = [beam for beam in beams if beam is not None]
         explosions = [explosion for explosion in explosions if explosion.life > 0]
 
+        if len(bombs) == 0:
+            fonto_big = pg.font.Font(None, 80)
+            font_mid = pg.font.Font(None, 60)
+            win_txt = fonto_big.render("You Win!", True, (255, 0, 0))
+            sc_txt  = font_mid.render(f"SCORE: {score.score}", True, (0, 0, 0))
+            screen.blit(win_txt, [WIDTH//2-150, HEIGHT//2])
+            screen.blit(sc_txt, [WIDTH//2-150, HEIGHT//2+80])
+            pg.display.update()
+            time.sleep(3)
+            return
+
         for explosion in explosions:
             explosion.update(screen)
 
